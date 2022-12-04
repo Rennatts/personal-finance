@@ -1,0 +1,7 @@
+.box{
+    display: grid;
+    grid-template-columns: 2fr 1.2fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 1em;
+    margin-top: 2%;
+}
