@@ -6,40 +6,54 @@ import CreatableReactSelect from "react-select/creatable"
 import { v4 as uuidV4 } from "uuid"
 import { Button } from "@mui/material";
 import './CreateExpense.css';
+import { Form } from "react-bootstrap";
 
 
 type ExpenseFormProps = {
   onSubmit: (data: ExpenseData) => void
   onAddTag: (tag: Tag) => void
+  onDeleteTag: (id: string) => void;
+  updateTag: (id: string, label: string) => void;
   availableTags: Tag[]
 } & Partial<ExpenseData>
 
 function CreateExpense({
   onSubmit,
   onAddTag,
+  onDeleteTag,
+  updateTag,
   availableTags,
   item = "",
-  value = 0,
+  value = "",
   tags = [],
 }: ExpenseFormProps) {
-  const itemRef = useRef<HTMLInputElement>(null)
-  const valueRef = useRef<HTMLTextAreaElement>(null)
+//   const itemRef = useRef<HTMLInputElement>(null)
+//   const valueRef = useRef<HTMLTextAreaElement>(null)
+
   const [selectedTags, setSelectedTags] = useState<Tag[]>(tags)
+  const [expense, setExpense] = useState({
+    item: "",
+    value: "",
+    tags: selectedTags
+  })
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
-    onSubmit({
-      item: itemRef.current!.value,
-      value: Number(valueRef.current!.value),
-      tags: selectedTags,
-    })
+    onSubmit(expense)
+  }
+
+  function handleInputChange(event: any) {
+    console.log("aaa", event.target.value)
+    setExpense({...expense, [event.target.name]: event.target.value});
   }
 
   return (
-    <Box className="box">
-        <TextField id="outlined-basic" label="item" variant="standard" />
-        <TextField id="outlined-basic" label="value- U$" variant="standard" />
+    <Form className="box">
+        {/* <Form.Control name="item" value={expense.item} onChange={(e) => handleInputChange(e)} placeholder="item"/>
+        <Form.Control name="value" value={expense.value} onChange={(e) => handleInputChange(e)} placeholder="value- U$"/> */}
+        <TextField name="item" value={expense.item} onChange={(e) => handleInputChange(e)} label="item" variant="standard" /> 
+        <TextField name="value" value={expense.value} onChange={(e) => handleInputChange(e)} label="value- U$" variant="standard" />
         <CreatableReactSelect
             onCreateOption={label => {
             const newTag = { id: uuidV4(), label }
@@ -61,8 +75,8 @@ function CreateExpense({
             }}
             isMulti
         />
-        <Button variant="contained">Save</Button>
-    </Box>
+        <Button onClick={handleSubmit} variant="contained">Save</Button>
+    </Form>
   )
 }
 

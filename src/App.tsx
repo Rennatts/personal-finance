@@ -12,13 +12,13 @@ export type RawExpense = {
 export type RawExpenseData = {
   item: string
   tagIds: string[],
-  value: number,
+  value: string,
 }
 
 export type ExpenseData = {
   item: string
   tags: Tag[],
-  value: number,
+  value: string,
 }
 
 export type Tag = {
@@ -68,6 +68,8 @@ function App() {
       <CreateExpense 
       onSubmit={onCreateExpense} 
       onAddTag={addTag} 
+      onDeleteTag={deleteTag}
+      updateTag={updateTag}
       availableTags={tags}></CreateExpense>
     </div>
   )
