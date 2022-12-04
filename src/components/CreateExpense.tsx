@@ -23,24 +23,22 @@ function CreateExpense({
   onDeleteTag,
   updateTag,
   availableTags,
-  item = "",
-  value = "",
-  tags = [],
 }: ExpenseFormProps) {
-//   const itemRef = useRef<HTMLInputElement>(null)
-//   const valueRef = useRef<HTMLTextAreaElement>(null)
 
-  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags)
+  const [selectedTag, setSelectedTag] = useState<Tag | undefined>()
   const [expense, setExpense] = useState({
     item: "",
     value: "",
-    tags: selectedTags
   })
+
+  console.log("selectedTag", selectedTag)
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    console.log("expense", expense)
 
-    onSubmit(expense)
+    //onSubmit({item: expense.item, value: expense.value, tag: selectedTag })
+    onSubmit({...expense, tag: selectedTag })
   }
 
   function handleInputChange(event: any) {
@@ -56,24 +54,18 @@ function CreateExpense({
         <TextField name="value" value={expense.value} onChange={(e) => handleInputChange(e)} label="value- U$" variant="standard" />
         <CreatableReactSelect
             onCreateOption={label => {
-            const newTag = { id: uuidV4(), label }
-            onAddTag(newTag)
-            setSelectedTags(prev => [...prev, newTag])
+                const newTag = { id: uuidV4(), label }
+                onAddTag(newTag)
+                setSelectedTag(newTag)
             }}
-            value={selectedTags.map(tag => {
-            return { label: tag.label, value: tag.id }
-            })}
+            //value={selectedTag}
             options={availableTags.map((tag: { label: any; id: any }) => {
-            return { label: tag.label, value: tag.id }
+                return { label: tag.label, id: tag.id }
             })}
-            onChange={tags => {
-            setSelectedTags(
-                tags.map(tag => {
-                return { label: tag.label, id: tag.value }
-                })
-            )
-            }}
-            isMulti
+            // onChange={tags => {
+            //     setSelectedTag(tags)
+            // }}
+            onChange={tag=> setSelectedTag({id: tag?.id, label: tag?.label})}
         />
         <Button onClick={handleSubmit} variant="contained">Save</Button>
     </Form>

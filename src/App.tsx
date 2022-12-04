@@ -11,13 +11,13 @@ export type RawExpense = {
 
 export type RawExpenseData = {
   item: string
-  tagIds: string[],
+  tag: string | undefined,
   value: string,
 }
 
 export type ExpenseData = {
   item: string
-  tags: Tag[],
+  tag?: Tag | undefined,
   value: string,
 }
 
@@ -30,11 +30,11 @@ function App() {
   const [expenses, setExpenses] = useLocalStorage<RawExpense[]>("EXPENSES", [])
   const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", [])
 
-  function onCreateExpense({ tags, ...data }: ExpenseData) {
-    setExpenses(prevNotes => {
+  function onCreateExpense({tag, ...data}: ExpenseData) {
+    setExpenses(prevNotes => { 
       return [
         ...prevNotes,
-        { ...data, id: uuidV4(), tagIds: tags.map(tag => tag.id) },
+        { data, id: uuidV4(), tag: tag?.label},
       ]
     })
   }
